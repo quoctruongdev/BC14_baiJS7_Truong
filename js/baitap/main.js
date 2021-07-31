@@ -7,7 +7,28 @@ document
   .addEventListener("click", delegationTable);
 document.getElementById("btnCapNhat").addEventListener("click", capNhatNV);
 document.getElementById("btnTimNV").addEventListener("click", timNV);
-var dsnv = [];
+
+var dsnv = JSON.parse(localStorage.getItem("dsnv")) || [];
+function khoitao() {
+  if (dsnv.length === 0) {
+    return;
+  }
+  dsnv = dsnv.map(function (nv) {
+    return new NhanVien(
+      nv.tkNV,
+      nv.tenNV,
+      nv.email,
+      nv.matKhau,
+      nv.date,
+      nv.luongCB,
+      nv.chucVu,
+      nv.gioLam
+    );
+  });
+  hienThi(dsnv);
+}
+khoitao();
+
 //Thêm nhân viên và hiển thị
 function themNV() {
   var tkNV = document.getElementById("tknv").value;
@@ -30,6 +51,8 @@ function themNV() {
     gioLam
   );
   dsnv.push(nhanVien);
+  //Lưu danh sách sinh viên xuống localStorage
+  localStorage.setItem("dsnv", JSON.stringify(dsnv));
   hienThi(dsnv);
   resetForm();
 }
@@ -82,6 +105,7 @@ function xoaNV(idNV) {
   dsnv = dsnv.filter(function (value) {
     return value.tkNV != idNV;
   });
+  localStorage.setItem("dsnv", JSON.stringify(dsnv));
   hienThi(dsnv);
 }
 
@@ -140,6 +164,7 @@ function capNhatNV() {
     }
     return nv;
   });
+  localStorage.setItem("dsnv", JSON.stringify(dsnv));
 
   hienThi(dsnv);
   resetForm();
