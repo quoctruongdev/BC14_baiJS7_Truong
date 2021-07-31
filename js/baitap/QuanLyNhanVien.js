@@ -1,41 +1,56 @@
-// Funtion contructor
-function NhanVien(tkNV, tenNV, email, matKhau, date, luongCB, chucVu, gioLam) {
-  (this.tkNV = tkNV),
-    (this.tenNV = tenNV),
-    (this.email = email),
-    (this.matKhau = matKhau),
-    (this.date = date),
-    (this.luongCB = luongCB),
-    (this.chucVu = chucVu),
-    (this.gioLam = gioLam);
+function QuanLyNhanVien() {
+  this.dsnv = JSON.parse(localStorage.getItem("dsnv")) || [];
 }
-
-NhanVien.prototype.xepLoai = function () {
-  if (this.gioLam >= 192) {
-    return "Xuất sắc";
+QuanLyNhanVien.prototype.khoiTao = function () {
+  if (this.dsnv.length === 0) {
+    return;
   }
-
-  if (this.gioLam >= 176) {
-    return "Giỏi";
-  }
-  if (this.gioLam >= 160) {
-    return "Khá";
-  }
-  if (this.gioLam < 160 && this.gioLam > 0) {
-    return "Trung bình";
-  }
-  return "";
+  this.dsnv = this.dsnv.map(function (nv) {
+    return new NhanVien(
+      nv.tkNV,
+      nv.tenNV,
+      nv.email,
+      nv.matKhau,
+      nv.date,
+      nv.luongCB,
+      nv.chucVu,
+      nv.gioLam
+    );
+  });
+};
+QuanLyNhanVien.prototype.saveLocalStorage = function () {
+  localStorage.setItem("dsnv", JSON.stringify(this.dsnv));
+};
+QuanLyNhanVien.prototype.themNhanVien = function (nhanVien) {
+  this.dsnv.push(nhanVien);
+  this.saveLocalStorage();
 };
 
-NhanVien.prototype.tinhLuong = function () {
-  if (this.chucVu == "Giám đốc") {
-    return this.luongCB * 3;
-  }
-  if (this.chucVu == "Trưởng phòng") {
-    return this.luongCB * 2;
-  }
-  if (this.chucVu == "Nhân viên") {
-    return this.luongCB;
-  }
-  return 0;
+QuanLyNhanVien.prototype.capNhatNhânVien = function (nhanVien) {
+  this.dsnv = this.dsnv.map(function (nv) {
+    if (nv.tkNV == nhanVien.tkNV) {
+      return nhanVien;
+    }
+    return nv;
+  });
+  this.saveLocalStorage();
+};
+QuanLyNhanVien.prototype.xoaNhanVien = function (tkNV) {
+  this.dsnv = this.dsnv.filter(function (value) {
+    return value.tkNV != tkNV;
+  });
+  this.saveLocalStorage();
+};
+
+QuanLyNhanVien.prototype.timKiemNhanVien = function (search) {
+  return this.dsnv.filter(function (nv) {
+    return (
+      nv.xepLoai().toLowerCase().indexOf(search.trim().toLowerCase()) != -1
+    );
+  });
+};
+QuanLyNhanVien.prototype.chonNhanVien = function (tkNV) {
+  return this.dsnv.find(function (nv) {
+    return nv.tkNV == tkNV;
+  });
 };
