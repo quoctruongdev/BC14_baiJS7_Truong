@@ -16,6 +16,7 @@ function subBTN() {
   document.getElementById("tknv").disabled = false;
   document.getElementById("btnThemNV").disabled = false;
   document.getElementById("btnCapNhat").disabled = true;
+  hiddenTB();
 }
 
 //Thêm nhân viên và hiển thị
@@ -39,7 +40,12 @@ function themNV() {
     chucVu,
     gioLam
   );
-
+  var isValid = xacThucDuLieu(nhanVien);
+  if (!isValid) {
+    return;
+  } else {
+    hiddenTB();
+  }
   qlnv.themNhanVien(nhanVien);
   hienThi(qlnv.dsnv);
   resetForm();
@@ -62,10 +68,10 @@ function hienThi(dsnv) {
             <td>${nv.tinhLuong()}</td>
             <td>${nv.xepLoai()}</td>
             <td>
-            <button class="btn btn-primary" id="btnThem" data-action = "select" data-toggle="modal" data-target="#myModal" data-tkNV = "${
+            <button class="btn btn-primary px-4 my-1" id="btnThem" data-action = "select" data-toggle="modal" data-target="#myModal" data-tkNV = "${
               nv.tkNV
             }">Edit</button>
-           <button class = "btn btn-danger" data-tkNV = "${
+           <button class = "btn btn-danger my-1" data-tkNV = "${
              nv.tkNV
            }" data-action = "update"> Delete </button> </td>
 
@@ -75,7 +81,8 @@ function hienThi(dsnv) {
   tbody.innerHTML = html;
 }
 
-// Xóa sinh viên và update sinh viên
+// Xóa và update sinh viên
+
 function delegationTable(event) {
   console.log(event.target);
   var tkNV = event.target.getAttribute("data-tkNV");
@@ -115,7 +122,7 @@ function editForm(nhanVien) {
   document.getElementById("gioLam").value = nhanVien.gioLam || "";
 }
 
-// Update nhân viên
+// Update
 function capNhatNV() {
   var tkNV = document.getElementById("tknv").value;
   var tenNV = document.getElementById("name").value;
@@ -137,6 +144,12 @@ function capNhatNV() {
     gioLam
   );
 
+  var isValid = xacThucDuLieu(nhanVien);
+  if (!isValid) {
+    return;
+  } else {
+    hiddenTB();
+  }
   qlnv.capNhatNhânVien(nhanVien);
   hienThi(qlnv.dsnv);
   resetForm();
@@ -147,6 +160,7 @@ function resetForm() {
   editForm({});
   document.getElementById("tknv").disabled = false;
   document.getElementById("btnThemNV").disabled = false;
+  hiddenTB();
 }
 
 //Search
@@ -154,4 +168,39 @@ function timNV() {
   var search = document.getElementById("searchName").value;
   var newDSNV = qlnv.timKiemNhanVien(search);
   hienThi(newDSNV);
+}
+
+function xacThucDuLieu(nhanVien) {
+  var validator = new Validator();
+  var isValid = validator.taiKhoanNhanVien("tbTKNV", nhanVien.tkNV);
+  isValid &= validator.tenNhanVien("tbTen", nhanVien.tenNV);
+  isValid &= validator.email("tbEmail", nhanVien.email);
+  isValid &= validator.passWord("tbMatKhau", nhanVien.matKhau);
+  isValid & validator.ngayLam("tbNgay", nhanVien.date);
+  isValid &= validator.luongCoBan("tbLuongCB", nhanVien.luongCB);
+  isValid &= validator.chonChucVu("tbChucVu", nhanVien.chucVu);
+  isValid &= validator.gioLamViec("tbGiolam", nhanVien.gioLam);
+
+  if (!isValid) {
+    for (var key in validator.errors) {
+      if (validator.errors[key]) {
+        document.getElementById(key).innerHTML = validator.errors[key];
+        document.getElementById(key).style.display = "block";
+      }
+    }
+    return false;
+  }
+  return true;
+}
+
+// Ẩn thông báo
+function hiddenTB() {
+  document.getElementById("tbTKNV").style.display = " none ";
+  document.getElementById("tbTen").style.display = "none";
+  document.getElementById("tbEmail").style.display = "none";
+  document.getElementById("tbMatKhau").style.display = "none";
+  document.getElementById("tbNgay").style.display = "none";
+  document.getElementById("tbLuongCB").style.display = "none";
+  document.getElementById("tbChucVu").style.display = "none";
+  document.getElementById("tbGiolam").style.display = "none";
 }
