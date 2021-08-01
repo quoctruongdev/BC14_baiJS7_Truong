@@ -25,7 +25,6 @@ QuanLyNhanVien.prototype.themNhanVien = function (nhanVien) {
   this.dsnv.push(nhanVien);
   this.saveLocalStorage();
 };
-
 QuanLyNhanVien.prototype.capNhatNhânVien = function (nhanVien) {
   this.dsnv = this.dsnv.map(function (nv) {
     if (nv.tkNV == nhanVien.tkNV) {
@@ -45,7 +44,7 @@ QuanLyNhanVien.prototype.xoaNhanVien = function (tkNV) {
 QuanLyNhanVien.prototype.timKiemNhanVien = function (search) {
   return this.dsnv.filter(function (nv) {
     return (
-      nv.xepLoai().toLowerCase().indexOf(search.trim().toLowerCase()) != -1
+      nv.xepLoai().toLowerCase().indexOf(search.trim().toLowerCase()) !== -1
     );
   });
 };

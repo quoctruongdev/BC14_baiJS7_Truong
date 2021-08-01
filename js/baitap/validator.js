@@ -20,7 +20,7 @@ Validator.prototype.taiKhoanNhanVien = function (name, value) {
   return true;
 };
 Validator.prototype.tenNhanVien = function (name, value) {
-  if (!/^[a-zA-Z ][^\d]{1,}$/.test(value)) {
+  if (!/^[a-zA-Z][^\d]{1,}$/.test(value)) {
     this.errors[name] = "Tên nhân viên phải là chữ, không để trống";
     return false;
   }
